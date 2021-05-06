@@ -1,0 +1,2 @@
+Prefix plugins/PhyloSeqFilter/example/
+Plugin PhyloSeqFilter inputfile filter.txt outputfile .

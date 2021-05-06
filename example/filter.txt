@@ -1,0 +1,6 @@
+OTU	otu_table.csv
+TAX	tax_table.csv
+META	sample_data.csv
+threshold	50
+OTUFilter	otu_table.final.csv
+TAXFilter	tax_table.final.csv
