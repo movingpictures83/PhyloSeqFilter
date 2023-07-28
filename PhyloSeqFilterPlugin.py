@@ -13,6 +13,10 @@ class PhyloSeqFilterPlugin:
       self.tax_file = open(PyPluMA.prefix()+"/"+self.parameters["TAX"], 'r')
       sample_file =open(PyPluMA.prefix()+"/"+self.parameters["META"], 'r')
       self.threshold = float(self.parameters["threshold"])
+      if ("keepifone" in self.parameters):
+          self.keepifone = True
+      else:
+          self.keepifone = False
       #Idea: Zero out (don't remove) OTUs in less than 50% of a category set
       # Then once everything is done, remove those with zero over all samples
 
@@ -26,7 +30,6 @@ class PhyloSeqFilterPlugin:
              cur_sample = contents[1]
              cur_sample_idx += 1
          self.categories.append(cur_sample_idx)
-
     def run(self):
        pass
 
@@ -37,7 +40,9 @@ class PhyloSeqFilterPlugin:
       toRemove = []
       for line in self.otu_file:
           contents = line.strip().split(',')
+          contents2 = contents.copy()
           for i in range(0, len(contents)):
+              #print(i)
               cat = self.categories[i]
               if (cat != -1):
                   if (cat != oldcat):
@@ -48,7 +53,7 @@ class PhyloSeqFilterPlugin:
                               contents[j] = str(0)
                               j -= 1
                       #elif (cat != 0):
-                      #    print("KEEPING: "+str(numkittens)+" "+str(numcats))
+                          #print("KEEPING: "+str(numkittens)+" "+str(numcats)+" "+str(cat)+" "+str(oldcat))
                       numkittens = 0.0
                       numcats = 0.0
                       if (float(contents[i]) != 0):
@@ -78,7 +83,10 @@ class PhyloSeqFilterPlugin:
               #print("REMOVING "+contents[0])
           else:
               for i in range(0, len(contents)):
-                otu_filter_file.write(contents[i])
+                if (self.keepifone):
+                   otu_filter_file.write(contents2[i])
+                else:
+                   otu_filter_file.write(contents[i])
                 if (i == len(contents)-1):
                   otu_filter_file.write('\n')
                 else:
